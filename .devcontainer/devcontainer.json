@@ -1,0 +1,45 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/dotnet
+{
+	"name": "C# (.NET)",
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"image": "mcr.microsoft.com/devcontainers/dotnet:0-7.0",
+	"features": {
+		"ghcr.io/devcontainers/features/powershell:1": {},
+		"ghcr.io/devcontainers/features/azure-cli:1": {
+            "version": "2.48.1"
+        },
+        "ghcr.io/devcontainers/features/docker-from-docker:1": {
+            "version": "20.10"
+        },
+        "ghcr.io/devcontainers/features/github-cli:1": {
+            "version": "2"
+        }
+	},
+	"customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.azure-dev",
+                "ms-azuretools.vscode-bicep",
+                "ms-azuretools.vscode-docker",
+                "github.vscode-github-actions",
+				"ms-dotnettools.csharp"
+            ]
+        },
+        "codespaces": {
+            "openFiles": [
+                "src/Program.cs"
+            ]
+        }
+    },
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [7070, 5264],
+	"portsAttributes": {
+			"7070": {
+				"protocol": "https"
+			}
+	},
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "dotnet restore"
+}

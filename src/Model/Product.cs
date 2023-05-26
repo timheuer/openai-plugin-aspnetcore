@@ -3,13 +3,13 @@
 public class Product
 {
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     [JsonPropertyName("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
     [JsonPropertyName("category")]
-    public string Category { get; set; }
+    public string? Category { get; set; }
     [JsonPropertyName("size")]
-    public string Size { get; set; }
+    public string? Size { get; set; }
     [JsonPropertyName("price")]
     public float Price { get; set; }
 }

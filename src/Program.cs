@@ -1,12 +1,11 @@
 using System.Text.Json;
 
 // get some fake data
-List<Product> products = JsonSerializer.Deserialize<List<Product>>(File.ReadAllText("data/products.json"));
+List<Product> products = JsonSerializer.Deserialize<List<Product>>(File.ReadAllText("./Data/products.json"));
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer() { Url = "https://r2bcgg47-7070.usw2.devtunnels.ms/" });

@@ -36,11 +36,18 @@ app.UseCors(policy => policy
     .AllowAnyMethod()
     .AllowAnyHeader());
 
-app.MapGet("/.well-known/ai-plugin.json", (HttpRequest http) =>
+app.MapGet("/.well-known/ai-plugin.json", async (HttpRequest http) =>
 {
+    // get any forwarded host from the HttpRequest
+    var forwardedHost = http.Headers["X-Forwarded-Host"].FirstOrDefault() ?? http.Headers["Host"];
+    var protocol = http.Headers["X-Forwarded-Proto"].FirstOrDefault() ?? http.Scheme;
+    var hostUri = $"{protocol}://{forwardedHost}";
+
     // open the .well-known/ai-plugin.json file
-    var aiPlugin = File.ReadAllText("./Data/ai-plugin.json");
-    return aiPlugin.Replace("$host", $"{http.Scheme}://{http.Host}");
+    var aiPlugin = await File.ReadAllTextAsync("./Data/ai-plugin.json");
+
+    // return the aiPlugin value as application/json response
+    return JsonDocument.Parse(aiPlugin.Replace("$host", hostUri)).RootElement;
 });
 
 app.MapGet("/products", (string? query = null) =>

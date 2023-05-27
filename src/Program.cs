@@ -4,12 +4,24 @@ using System.Text.Json;
 List<Product> products = JsonSerializer.Deserialize<List<Product>>(File.ReadAllText("./Data/products.json"));
 
 var builder = WebApplication.CreateBuilder(args);
+string? forwardedHost = string.Empty;
+string? protocol = string.Empty;
+string? hostUri = string.Empty;
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer() { Url = "https://r2bcgg47-7070.usw2.devtunnels.ms/" });
-    c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer() { Url = "https://localhost:7070" });
+    var httpContextAccessor = builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>();
+    var request = httpContextAccessor?.HttpContext?.Request;
+
+    // check for any host forwarding
+    // get any forwarded host from the HttpRequest
+    forwardedHost = request?.Headers["X-Forwarded-Host"].FirstOrDefault() ?? request?.Headers["Host"];
+    protocol = request?.Headers["X-Forwarded-Proto"].FirstOrDefault() ?? request?.Scheme;
+    hostUri = $"{protocol}://{forwardedHost}";
+
+    c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer() { Url = hostUri });
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "Contoso Product Search", Version = "v1", Description = "Search through Contoso's wide range of outdoor and recreational products." });
 });
 builder.Services.AddCors();
@@ -38,11 +50,6 @@ app.UseCors(policy => policy
 
 app.MapGet("/.well-known/ai-plugin.json", async (HttpRequest http) =>
 {
-    // get any forwarded host from the HttpRequest
-    var forwardedHost = http.Headers["X-Forwarded-Host"].FirstOrDefault() ?? http.Headers["Host"];
-    var protocol = http.Headers["X-Forwarded-Proto"].FirstOrDefault() ?? http.Scheme;
-    var hostUri = $"{protocol}://{forwardedHost}";
-
     // open the .well-known/ai-plugin.json file
     var aiPlugin = await File.ReadAllTextAsync("./Data/ai-plugin.json");
 

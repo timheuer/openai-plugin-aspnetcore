@@ -1,3 +1,6 @@
+# Ignore files for linguist
+*.bicep linguist-detectable=false
+
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
 ###############################################################################

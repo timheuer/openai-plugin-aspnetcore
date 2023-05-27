@@ -9,6 +9,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer() { Url = "https://r2bcgg47-7070.usw2.devtunnels.ms/" });
+    c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer() { Url = "https://localhost:7070" });
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "Contoso Product Search", Version = "v1", Description = "Search through Contoso's wide range of outdoor and recreational products." });
 });
 builder.Services.AddCors();
@@ -34,6 +35,13 @@ app.UseCors(policy => policy
     .WithOrigins("https://chat.openai.com")
     .AllowAnyMethod()
     .AllowAnyHeader());
+
+app.MapGet("/.well-known/ai-plugin.json", (HttpRequest http) =>
+{
+    // open the .well-known/ai-plugin.json file
+    var aiPlugin = File.ReadAllText("./Data/ai-plugin.json");
+    return aiPlugin.Replace("$host", $"{http.Scheme}://{http.Host}");
+});
 
 app.MapGet("/products", (string? query = null) =>
 {

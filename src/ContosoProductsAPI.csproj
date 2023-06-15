@@ -17,15 +17,16 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="TimHeuer.OpenAIPluginMiddleware" Version="1.0.19" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\.well-known\logo.png" />
+    <None Include="wwwroot\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\.well-known\logo.png">
+    <Content Update="wwwroot\logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

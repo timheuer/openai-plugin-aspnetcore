@@ -14,7 +14,8 @@
         },
         "ghcr.io/devcontainers/features/github-cli:1": {
             "version": "2"
-        }
+        },
+        "ghcr.io/timheuer/devcontainer-azd/azd:1": {}
 	},
 	"customizations": {
         "vscode": {

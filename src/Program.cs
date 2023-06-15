@@ -5,7 +5,6 @@ using OpenAIPluginMiddleware;
 List<Product> products = JsonSerializer.Deserialize<List<Product>>(File.ReadAllText("./Data/products.json"));
 
 var builder = WebApplication.CreateBuilder(args);
-string swaggerEndpoint = "/swagger/v1/swagger.yaml";
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -22,7 +21,7 @@ builder.Services.AddAiPluginGen(options =>
     options.RelativeLogoUrl = "/logo.png";
     options.DescriptionForHuman = "Search through Contoso's wide range of outdoor and recreational products.";
     options.DescriptionForModel = "Plugin for searching through Contoso's outdoor and recreational products. Use it whenever a user asks about products or activities related to camping, hiking, climbing or camping.";
-    options.ApiDefinition = new Api() { RelativeUrl = swaggerEndpoint };
+    options.ApiDefinition = new Api() { RelativeUrl = "/swagger/v1/swagger.yaml" };
 });
 
 var app = builder.Build();

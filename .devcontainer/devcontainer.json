@@ -24,7 +24,7 @@
                 "ms-azuretools.vscode-bicep",
                 "ms-azuretools.vscode-docker",
                 "github.vscode-github-actions",
-				"ms-dotnettools.csharp"
+				"ms-dotnettools.csharp@prerelease"
             ]
         },
         "codespaces": {

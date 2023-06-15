@@ -5,36 +5,21 @@ using OpenAIPluginMiddleware;
 List<Product> products = JsonSerializer.Deserialize<List<Product>>(File.ReadAllText("./Data/products.json"));
 
 var builder = WebApplication.CreateBuilder(args);
-string? forwardedHost = string.Empty;
-string? protocol = string.Empty;
-string? hostUri = string.Empty;
 string swaggerEndpoint = "/swagger/v1/swagger.yaml";
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(c =>
 {
-    var httpContextAccessor = builder.Services.BuildServiceProvider().GetRequiredService<IHttpContextAccessor>();
-    var request = httpContextAccessor?.HttpContext?.Request;
-
-    // check for any host forwarding
-    // get any forwarded host from the HttpRequest
-    // this is really optional and creates a dynamic server listing -- omit if using an environment variable
-    forwardedHost = request?.Headers["X-Forwarded-Host"].FirstOrDefault() ?? request?.Headers["Host"];
-    protocol = request?.Headers["X-Forwarded-Proto"].FirstOrDefault() ?? request?.Scheme;
-    hostUri = $"{protocol}://{forwardedHost}";
-
-    c.AddServer(new Microsoft.OpenApi.Models.OpenApiServer() { Url = hostUri });
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "Contoso Product Search", Version = "v1", Description = "Search through Contoso's wide range of outdoor and recreational products." });
 });
-builder.Services.AddCors();
+
 builder.Services.AddAiPluginGen(options =>
 {
     options.NameForHuman = "Contoso Product Search";
     options.NameForModel = "contosoproducts";
     options.LegalInfoUrl = "https://www.microsoft.com/en-us/legal/";
     options.ContactEmail = "noreply@microsoft.com";
-    options.LogoUrl = "/logo.png";
+    options.RelativeLogoUrl = "/logo.png";
     options.DescriptionForHuman = "Search through Contoso's wide range of outdoor and recreational products.";
     options.DescriptionForModel = "Plugin for searching through Contoso's outdoor and recreational products. Use it whenever a user asks about products or activities related to camping, hiking, climbing or camping.";
     options.ApiDefinition = new Api() { RelativeUrl = swaggerEndpoint };
@@ -52,10 +37,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors(policy => policy
-    .WithOrigins("https://chat.openai.com")
-    .AllowAnyMethod()
-    .AllowAnyHeader());
 
 app.MapGet("/products", (string? query = null) =>
 {

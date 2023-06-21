@@ -2,14 +2,14 @@ using System.Text.Json;
 using OpenAIPluginMiddleware;
 
 // get some fake data
-List<Product> products = JsonSerializer.Deserialize<List<Product>>(File.ReadAllText("./Data/products.json"));
+var products = JsonSerializer.Deserialize<List<Product>>(File.ReadAllText("./Data/products.json"));
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "Contoso Product Search", Version = "v1", Description = "Search through Contoso's wide range of outdoor and recreational products." });
+    c.SwaggerDoc("v1", new() { Title = "Contoso Product Search", Version = "v1", Description = "Search through Contoso's wide range of outdoor and recreational products." });
 });
 
 builder.Services.AddAiPluginGen(options =>
@@ -21,7 +21,7 @@ builder.Services.AddAiPluginGen(options =>
     options.RelativeLogoUrl = "/logo.png";
     options.DescriptionForHuman = "Search through Contoso's wide range of outdoor and recreational products.";
     options.DescriptionForModel = "Plugin for searching through Contoso's outdoor and recreational products. Use it whenever a user asks about products or activities related to camping, hiking, climbing or camping.";
-    options.ApiDefinition = new Api() { RelativeUrl = "/swagger/v1/swagger.yaml" };
+    options.ApiDefinition = new Api { RelativeUrl = "/swagger/v1/swagger.yaml" };
 });
 
 var app = builder.Build();
@@ -39,10 +39,10 @@ app.UseHttpsRedirection();
 
 app.MapGet("/products", (string? query = null) =>
 {
-    if (query != null) { 
-        return products?.Where(p => p.Name.Contains(query, StringComparison.OrdinalIgnoreCase) || 
-        p.Description.Contains(query, StringComparison.OrdinalIgnoreCase) || 
-        p.Category.Contains(query, StringComparison.OrdinalIgnoreCase) ); 
+    if (query is not null) { 
+        return products?.Where(p => p.Name?.Contains(query, StringComparison.OrdinalIgnoreCase) == true ||
+            p.Description?.Contains(query, StringComparison.OrdinalIgnoreCase) == true || 
+            p.Category?.Contains(query, StringComparison.OrdinalIgnoreCase) == true); 
     }
 
     return products;
